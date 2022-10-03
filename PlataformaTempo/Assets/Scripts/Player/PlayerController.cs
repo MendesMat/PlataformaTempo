@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    private float _groundedSpeed = 5f;
-    private float _jumpStrength = 7f;
+    public float _groundedSpeed = 5f;
+    public float _jumpStrength = 7f;
     private bool _isGrounded;
 
     [Header("Keybinds")]
