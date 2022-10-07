@@ -5454,8 +5454,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundedSpeed: 5
+  speedUpgrade: 1
   jumpStrength: 7
-  totalJumps: 1
+  totalJumps: 2
 --- !u!95 &1453033140
 Animator:
   serializedVersion: 4

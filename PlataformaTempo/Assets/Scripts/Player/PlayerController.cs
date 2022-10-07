@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour
     public float groundedSpeed = 5f;
     public float speedUpgrade = 1f;
     public float jumpStrength = 7f;
-    public int totalJumps = 1;
-    private int _atJump = 0; 
+    public int totalJumps = 2;
+    private int _atJump = 1; 
 
     void Awake()
     {
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(_jumpKey) && isGrounded() && _atJump < totalJumps)
+        if (Input.GetKeyDown(_jumpKey) && _atJump < totalJumps)
         {
             Jump();
             Debug.Log(_atJump);
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
         //reseting total number of jumps
         if (isGrounded())
         {
-            _atJump = 0;
+            _atJump = 1;
         }
     }
 
