@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump")]
     public float JumpStrength = 7f;
-    public float MUltJumpStregth = 4.5f;
+    public float MultJumpStregth = 4.5f;
     public int TotalJumps = 2;
     private int _atJump;
     private bool _multipleJump;
@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
         else if (_multipleJump && _atJump > 0)
         {
             _atJump -= 1;
-            _playerRB.velocity = new Vector2(_playerRB.velocity.x, MUltJumpStregth);
+            _playerRB.velocity = new Vector2(_playerRB.velocity.x, MultJumpStregth);
             Debug.Log(_atJump);
         }
     }
