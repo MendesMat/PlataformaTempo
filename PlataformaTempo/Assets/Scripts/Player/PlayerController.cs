@@ -8,20 +8,26 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _playerRB;
     private Animator _playerAnimator;
     private BoxCollider2D _playerBoxCollider2D;
-    [SerializeField] private LayerMask _layerForeground;
-    private float _raycastSize = 0.5f;
 
     [Header("Key Bindings")]
     //private KeyCode _attackKey = KeyCode.Z;
     //private KeyCode _specialKey = KeyCode.X;
     private KeyCode _jumpKey = KeyCode.Space;
 
-    [Header("Movement")]
-    public float groundedSpeed = 5f;
-    public float speedUpgrade = 1f;
-    public float jumpStrength = 7f;
-    public int totalJumps = 2;
-    private int _atJump = 1; 
+    [Header("Horizontal Movement")]
+    public float GroundedSpeed = 5f;
+    public float SpeedUpgrade = 1f;
+
+    [Header("Jump")]
+    public float JumpStrength = 7f;
+    public float MUltJumpStregth = 4.5f;
+    public int TotalJumps = 2;
+    private int _atJump;
+    private bool _multipleJump;
+
+    [Header("Ground Check")]
+    private float _raycastSize = 0.1f;
+    [SerializeField] private LayerMask _layerForeground;
 
     void Awake()
     {
@@ -30,10 +36,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(_jumpKey) && _atJump < totalJumps)
+        //jump commands
+        if (Input.GetKeyDown(_jumpKey))
         {
             Jump();
-            Debug.Log(_atJump);
         }
 
         JumpAnimationController();
@@ -46,10 +52,10 @@ public class PlayerController : MonoBehaviour
         //checking players collision with the ground
         _playerAnimator.SetBool("Grounded", isGrounded());
 
-        //reseting total number of jumps
+        //reseting total number of jumps if true
         if (isGrounded())
         {
-            _atJump = 1;
+            if(_playerRB.velocity.y < 0.1f) _atJump = TotalJumps;
         }
     }
 
@@ -64,7 +70,7 @@ public class PlayerController : MonoBehaviour
     void HorizontalMovement()
     {
         //player rb receives velocity
-        var movement = Input.GetAxis("Horizontal") * groundedSpeed * speedUpgrade;
+        var movement = Input.GetAxis("Horizontal") * GroundedSpeed * SpeedUpgrade;
         _playerRB.velocity = new Vector2(movement, _playerRB.velocity.y);
 
         //sprite flipper
@@ -81,46 +87,37 @@ public class PlayerController : MonoBehaviour
     //control player's jumping movement and animation
     void Jump()
     {
-        //jumping action
-        _atJump++;
-        _playerRB.velocity = new Vector2(_playerRB.velocity.x, jumpStrength);
+        if (isGrounded())
+        {
+            _atJump -= 1;
+            _playerRB.velocity = new Vector2(_playerRB.velocity.x, JumpStrength);
+            _multipleJump = true;
+            Debug.Log(_atJump);
+        }
+        else if (_multipleJump && _atJump > 0)
+        {
+            _atJump -= 1;
+            _playerRB.velocity = new Vector2(_playerRB.velocity.x, MUltJumpStregth);
+            Debug.Log(_atJump);
+        }
     }
 
+    //changes the players animations between jumping and falling, depending on vertical velocity
     void JumpAnimationController()
     {
         _playerAnimator.SetFloat("VerticalVelocity", _playerRB.velocity.y);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Platform")
-        {
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Platform")
-        {
-            //_playerAnimator.SetBool("Grounded", false);
-        }
-    }
-
     private bool isGrounded()
     {
-        bool grounded = Physics2D.Raycast(_playerBoxCollider2D.bounds.center, Vector2.down, _raycastSize, _layerForeground);
+        bool grounded = Physics2D.BoxCast(_playerBoxCollider2D.bounds.center, _playerBoxCollider2D.bounds.size, 0f, Vector2.down, _raycastSize, _layerForeground);
 
-        Color color;
-        if (grounded)
-        {
-            color = Color.red;
-        }
-        else
-        {
-            color = Color.green;
-        }
+        Color color = grounded ? Color.red : Color.green;
 
-        Debug.DrawRay(_playerBoxCollider2D.bounds.center, Vector2.down*_raycastSize, color);
+        Debug.DrawRay(_playerBoxCollider2D.bounds.center - new Vector3(_playerBoxCollider2D.bounds.extents.x, 0), Vector2.down * (_playerBoxCollider2D.bounds.extents.y + _raycastSize), color);
+        Debug.DrawRay(_playerBoxCollider2D.bounds.center + new Vector3(_playerBoxCollider2D.bounds.extents.x, 0), Vector2.down * (_playerBoxCollider2D.bounds.extents.y + _raycastSize), color);
+        Debug.DrawRay(_playerBoxCollider2D.bounds.center - new Vector3(_playerBoxCollider2D.bounds.extents.x, _playerBoxCollider2D.bounds.extents.y + _raycastSize), Vector2.right * (_playerBoxCollider2D.bounds.size), color);
+
         return grounded;
     }
 }
