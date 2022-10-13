@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Variables
     [Header("Components")]
     private Rigidbody2D _playerRB;
     private Animator _playerAnimator;
@@ -21,13 +22,13 @@ public class PlayerController : MonoBehaviour
     [Header("Jump")]
     public float JumpStrength = 7f;
     public float MultJumpStregth = 4.5f;
-    public int TotalJumps = 2;
+    public int TotalJumps = 3;
     private int _atJump;
     private bool _multipleJump;
 
-    [Header("Ground Check")]
     private float _raycastSize = 0.1f;
     [SerializeField] private LayerMask _layerForeground;
+    #endregion
 
     void Awake()
     {
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        #region Inputs
         //jump commands
         if (Input.GetKeyDown(_jumpKey))
         {
@@ -43,22 +45,26 @@ public class PlayerController : MonoBehaviour
         }
 
         JumpAnimationController();
+        #endregion
     }
 
     void FixedUpdate()
     {
+        #region Player Movement
         HorizontalMovement();
 
         //checking players collision with the ground
         _playerAnimator.SetBool("Grounded", isGrounded());
 
-        //reseting total number of jumps if true
+        //reseting total number of jumps if grounded
         if (isGrounded())
         {
             if(_playerRB.velocity.y < 0.1f) _atJump = TotalJumps;
         }
+        #endregion region
     }
 
+    #region Functions
     void GetComponents()
     {
         _playerRB = GetComponent<Rigidbody2D>();
@@ -66,22 +72,20 @@ public class PlayerController : MonoBehaviour
         _playerBoxCollider2D = GetComponent<BoxCollider2D>();
     }
 
-    //control player's horizontal movement and animation
+    //control player's horizontal movement
     void HorizontalMovement()
     {
-        //player rb receives velocity
         var movement = Input.GetAxis("Horizontal") * GroundedSpeed * SpeedUpgrade;
         _playerRB.velocity = new Vector2(movement, _playerRB.velocity.y);
 
         //sprite flipper
         if (movement != 0)
         {
-            //flip sprite left and right
-            transform.localScale = new Vector3(Mathf.Sign(movement), 1f, 1f); //Mathf.Sign returns 1 if vector X >=0. else, returns -1. Fliping the sprite scale
+            transform.localScale = new Vector3(Mathf.Sign(movement), 1f, 1f);
         }
 
         //animations switch between idle and walk
-        _playerAnimator.SetBool("Moving", movement != 0); //if moving == true, returns true. if not, returns false. If true, walks. If false, idle. 
+        _playerAnimator.SetBool("Moving", movement != 0);
     }
 
     //control player's jumping movement and animation
@@ -108,6 +112,7 @@ public class PlayerController : MonoBehaviour
         _playerAnimator.SetFloat("VerticalVelocity", _playerRB.velocity.y);
     }
 
+    //boxcast to check if the player is grounded
     private bool isGrounded()
     {
         bool grounded = Physics2D.BoxCast(_playerBoxCollider2D.bounds.center, _playerBoxCollider2D.bounds.size, 0f, Vector2.down, _raycastSize, _layerForeground);
@@ -120,4 +125,5 @@ public class PlayerController : MonoBehaviour
 
         return grounded;
     }
+    #endregion
 }
