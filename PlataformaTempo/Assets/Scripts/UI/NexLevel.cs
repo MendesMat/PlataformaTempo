@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class NexLevel : MonoBehaviour
 {
+    //Ao colidir com o objeto em cene ele é jogado para outra cena.
     public string lvlName;
     private void OnCollisionEnter2D(Collision2D collision)
     {

@@ -53,6 +53,7 @@ public class Timer : MonoBehaviour
         if (seconds > 0) { timerText1.text += seconds + "s "; }
     }
     #endregion
+    #region Timer2
     private IEnumerator Timer2()
     {
         timer2 = starTime;
@@ -77,5 +78,7 @@ public class Timer : MonoBehaviour
         float seconds = (int)(timer2 % 60);
         string secondsString = seconds.ToString("F2");
 
-        timerText2.text = days +"d " + hours + "h " + minutes + "m " + secondsString;}
+        timerText2.text = days +"d " + hours + "h " + minutes + "m " + secondsString;
+    }
+    #endregion
 }
