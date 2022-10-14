@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundLayer; //uma layer especifica para o piso
 
     private float horizontal;
-    private float speed = 8f;
+    public float speed =0f;
     public float jumpingPower = 0f;
     private bool isFacingRight = true;
 
