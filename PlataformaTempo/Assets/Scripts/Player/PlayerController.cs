@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     #region Variables
-    [Header("Components")]
+    //Components
     private Rigidbody2D _playerRB;
     private Animator _playerAnimator;
     private BoxCollider2D _playerBoxCollider2D;
 
-    [Header("Key Bindings")]
-    //private KeyCode _attackKey = KeyCode.Z;
-    //private KeyCode _specialKey = KeyCode.X;
+    //Key Bindings
+    private KeyCode _attackKey = KeyCode.Z;
+    private KeyCode _specialKey = KeyCode.X;
     private KeyCode _jumpKey = KeyCode.Space;
 
     [Header("Horizontal Movement")]
